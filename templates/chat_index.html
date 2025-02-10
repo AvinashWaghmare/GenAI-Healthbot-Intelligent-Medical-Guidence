@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HEALTHMEDBOT</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+      integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='style.css')}}"
+    />
+  </head>
+
+  <body> 
+        
+    <div class="container-fluid h-100">
+      <div class="row justify-content-center h-100">
+            <div class="col-md-8 col-xl-6 chat">
+                <div class="card">
+                    <div class="top-bar">Health.Med.Bot</div>
+                        <div class="card-header msg_head">
+                            <div class="d-flex bd-highlight">
+                                <div class="img_cont">
+                                <img src="static/Healthmedbot.png"
+                                class="rounded-circle user_img"
+                                />
+                                <span class="online_icon"></span>
+                                </div>
+                                <div class="user_info">
+                                <span><b>HEALTHMEDBOT</b></span>
+                                <b><p>HELLO! WELCOME ASK ME ANYTHING ABOUT MEDICAL!</p></b>
+                                 </div>
+                            </div>
+                        </div>
+            <div id="messageFormeight" class="card-body msg_card_body"></div>
+            <div class="card-footer">
+              <form id="messageArea" class="input-group">
+                <input
+                  type="text"
+                  id="text"
+                  name="msg"
+                  placeholder="Type your message..."
+                  autocomplete="off"
+                  class="form-control type_msg"
+                  required
+                />
+                <div class="input-group-append">
+                  <button
+                    type="submit"
+                    id="send"
+                    class="input-group-text send_btn"
+                  >
+                    <i class="fas fa-location-arrow"></i>
+                  </button>
+                  <button type="button" id="clear" class="input-group-text clear_btn">
+                    <i class="fas fa-trash"></i>  </button>
+                  <button type="button" id="voice" class="input-group-text voice_btn">
+                    <i class="fas fa-microphone"></i></button>  
+                    <select id="languageSelect" class="form-control">
+                        <option value="en-US">English (US)</option>
+                        <option value="mr-IN">Marathi (India)</option>
+                        <option value="es-ES">Spanish (Spain)</option>
+                        <option value="fr-FR">French (France)</option>
+                        <option value="de-DE">German (Germany)</option>
+                    </select>                          
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function scrollToBottom() {
+        var messageBody = document.getElementById("messageFormeight");
+        messageBody.scrollTop = messageBody.scrollHeight;
+      }
+      
+      $(document).ready(function () {
+        $("#messageArea").on("submit", function (event) {
+          const date = new Date();
+          const hour = date.getHours();
+          const minute = date.getMinutes();
+          const str_time = hour + ":" + minute;
+          var rawText = $("#text").val();
+        
+        $("#clear").click(function() {
+            $("#messageFormeight").empty(); // Clear the chat messages
+                $("#text").val(""); // Clear the input field (optional)
+            });
+        
+                
+            $("#voice").click(function () {
+                // Get selected language
+                var selectedLanguage = $("#languageSelect").val();
+
+                // Check if speech recognition is supported
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    var recognition = new (webkitSpeechRecognition || SpeechRecognition)();
+                    recognition.lang = selectedLanguage; // Set language to the selected language
+                    recognition.continuous = false; // Listen only once
+
+                    recognition.onstart = function() {
+                        console.log("Voice recognition started (" + selectedLanguage + ").");
+                    };
+
+                    recognition.onresult = function (event) {
+                        var transcript = event.results[0][0].transcript;
+                        $("#text").val(transcript); // Set input field value
+                        $("#messageArea").submit(); // Trigger form submission
+                    };
+
+                    recognition.onend = function() {
+                        console.log("Voice recognition ended (" + selectedLanguage + ").");
+                    };
+
+
+                    recognition.onerror = function (event) {
+                        console.error("Speech recognition error:", event.error);
+                        // Handle errors (e.g., display a message to the user)
+                        let errorMessage = "Speech recognition error (" + selectedLanguage + ").";
+                        if (event.error === 'not-allowed') {
+                            errorMessage = "Microphone access denied. Please check your browser settings.";
+                        } else if (event.error === 'no-speech') {
+                            errorMessage = "No speech detected. Please try again.";
+                        } else if (event.error === 'network') {
+                            errorMessage = "Network error. Please check your internet connection.";
+                        }
+                        alert(errorMessage);
+                    };
+
+                    recognition.start();
+                } else {
+                    alert("Your browser doesn't support speech recognition. Please try a different browser like Chrome or Edge.");
+                }
+
+            
+            });
+          var userHtml ='<div class="d-flex justify-content-end mb-4"><div class="msg_cotainer_send">' +rawText +'<span class="msg_time_send">' +str_time +'</span></div><div class="img_cont_msg"><img src="static/Avi.png" class="rounded-circle user_img_msg"></div></div>';
+
+          $("#text").val("");
+          $("#messageFormeight").append(userHtml);
+
+          scrollToBottom();
+
+          $.ajax({
+            data: {
+              msg: rawText,
+            },
+            type: "POST",
+            url: "/get",
+          }).done(function (data) {
+            var botHtml ='<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="static/Healthmedbot.png" class="rounded-circle user_img_msg"></div><div class="msg_cotainer">' + data +'<span class="msg_time">' + str_time + "</span></div></div>";
+            $("#messageFormeight").append($.parseHTML(botHtml));
+            scrollToBottom();
+          });
+          event.preventDefault();
+        });
+      });
+    </script>
+  </body>
+</html>
