@@ -1,7 +1,7 @@
 # GenAI-Healthbot-Intelligent-Medical-Guidence
 
 ### Overview
-``bash
+```bash
 This project is AI-powered Medical Chatbot designed to provide users with accessible health disease information and guidance.
 The chatbot utilizes Google's Gemini 1.5 Flash model for natural language generation. 
 Google Generative AI Embeddings (embedding-001):Generates vector embeddings of text for semantic understanding and similarity search.
