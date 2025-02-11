@@ -1,5 +1,23 @@
 # GenAI-Healthbot-Intelligent-Medical-Guidence
 
+### Overview
+``bash
+This project is AI-powered Medical Chatbot designed to provide users with accessible health disease information and guidance.
+The chatbot utilizes Google's Gemini 1.5 Flash model for natural language generation. 
+Google Generative AI Embeddings (embedding-001):Generates vector embeddings of text for semantic understanding and similarity search.
+Model Selection: embedding-001.
+Embedding Process: Detailed explanation of how text is preprocessed, tokenized, and embedded.
+API Integration: How Langchain interacts with the Google Generative AI Embeddings API.
+Google Generative AI Embeddings (embedding-001) for semantic understanding, Langchain for the AI pipeline.
+Pinecone Vector Database: Stores and efficiently retrieves medical knowledge based on vector embeddings.
+Data Source: medical textbooks, research papers, clinical guidelines, reputable health websites.
+LangChain: Is a framework for developing applications powered by large language models (LLMs).
+Google Gemini 1.5 Flash Model: Generates natural language responses based on the user's query and retrieved information.
+Model Selection: Gemini 1.5 Flash (e.g., speed, cost-effectiveness, performance on medical text).
+Prompt Engineering: Strategies for crafting effective prompts to guide the model's response generation.
+API Integration: How Langchain interacts with the Gemini 1.5 Flash API.
+To assist users in understanding medical concepts and terminology.
+```
 # How to run?
 ### STEPS:
 
